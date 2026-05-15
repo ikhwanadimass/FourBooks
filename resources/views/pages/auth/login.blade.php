@@ -1,59 +1,59 @@
-<x-layouts::auth :title="__('Log in')">
-    <div class="flex flex-col gap-6">
-        <x-auth-header :title="__('Log in to your account')" :description="__('Enter your email and password below to log in')" />
+<x-layouts::auth.login :title="__('Log in')">
+    <!-- Dark Card Container - Landscape Rectangle Like Photo -->
+    <div class="bg-black/50 rounded-2xl p-16 backdrop-blur-sm w-full max-w-2xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-6xl font-bold text-white tracking-tight">
+                Login
+                <span class="text-blue-500">Fourbooks</span>
+            </h1>
+        </div>
 
-        <!-- Session Status -->
-        <x-auth-session-status class="text-center" :status="session('status')" />
-
-        <form method="POST" action="{{ route('login.store') }}" class="flex flex-col gap-6">
+        <!-- Login Form -->
+        <form method="POST" action="{{ route('login.store') }}" class="space-y-8">
             @csrf
 
-            <!-- Email Address -->
-            <flux:input
-                name="email"
-                :label="__('Email address')"
-                :value="old('email')"
-                type="email"
-                required
-                autofocus
-                autocomplete="email"
-                placeholder="email@example.com"
-            />
+            <!-- Email Address Input -->
+            <div>
+                <input
+                    id="email"
+                    type="email"
+                    name="email"
+                    value="{{ old('email') }}"
+                    required
+                    autofocus
+                    autocomplete="email"
+                    placeholder="Username"
+                    class="w-full rounded-lg border-0 bg-gray-300 px-6 py-5 text-gray-700 text-base placeholder-gray-400 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 transition-all"
+                />
+                @error('email')
+                    <p class="mt-2 text-sm text-red-300">{{ $message }}</p>
+                @enderror
+            </div>
 
-            <!-- Password -->
-            <div class="relative">
-                <flux:input
-                    name="password"
-                    :label="__('Password')"
+            <!-- Password Input -->
+            <div>
+                <input
+                    id="password"
                     type="password"
+                    name="password"
                     required
                     autocomplete="current-password"
-                    :placeholder="__('Password')"
-                    viewable
+                    placeholder="Password"
+                    class="w-full rounded-lg border-0 bg-gray-300 px-6 py-5 text-gray-700 text-base placeholder-gray-400 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 transition-all"
                 />
-
-                @if (Route::has('password.request'))
-                    <flux:link class="absolute top-0 text-sm end-0" :href="route('password.request')" wire:navigate>
-                        {{ __('Forgot your password?') }}
-                    </flux:link>
-                @endif
+                @error('password')
+                    <p class="mt-2 text-sm text-red-300">{{ $message }}</p>
+                @enderror
             </div>
 
-            <!-- Remember Me -->
-            <flux:checkbox name="remember" :label="__('Remember me')" :checked="old('remember')" />
-
-            <div class="flex items-center justify-end">
-                <flux:button variant="primary" type="submit" class="w-full" data-test="login-button">
-                    {{ __('Log in') }}
-                </flux:button>
-            </div>
+            <!-- Login Button -->
+            <button
+                type="submit"
+                class="w-full rounded-lg bg-blue-600 px-8 py-5 font-bold text-lg text-gray-800 hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-black/50 transition-all duration-200 mt-10 shadow-lg"
+            >
+                Log In
+            </button>
         </form>
-
-        @if (Route::has('register'))
-            <div class="space-x-1 text-sm text-center rtl:space-x-reverse text-zinc-600 dark:text-zinc-400">
-                <span>{{ __('Don\'t have an account?') }}</span>
-                <flux:link :href="route('register')" wire:navigate>{{ __('Sign up') }}</flux:link>
-            </div>
-        @endif
     </div>
-</x-layouts::auth>
+</x-layouts::auth.login>
