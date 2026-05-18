@@ -7,6 +7,7 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
     plugins: [
+        tailwindcss(), // <-- 1. Pindahkan ini ke paling ATAS di dalam plugins
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.js'],
             refresh: true,
@@ -16,7 +17,6 @@ export default defineConfig({
                 }),
             ],
         }),
-        tailwindcss(),
     ],
     server: {
         cors: true,
