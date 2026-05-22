@@ -33,34 +33,54 @@
                 <nav class="flex-1 px-4 py-6 space-y-2">
                     <div class="text-xs font-semibold text-white/70 uppercase tracking-wider px-2 mb-4">Menu</div>
                     
-                    @php
-                        $rolePrefix = auth()->user()->role === 'admin' ? 'admin' : 'staff';
-                    @endphp
-
-                    <!-- Dashboard Link -->
-                    <a href="{{ route($rolePrefix . '.dashboard') }}" class="flex items-center gap-3 px-4 py-3 text-white bg-white/15 rounded-lg hover:bg-white/20 transition-colors font-medium">
-                        <i class="fas fa-th text-lg"></i>
-                        <span>Dashboard</span>
-                    </a>
-
-                    <!-- Product Link -->
-                    <a href="{{ route($rolePrefix . '.products.index') }}" class="flex items-center gap-3 px-4 py-3 text-white/90 hover:bg-white/10 rounded-lg transition-colors font-medium">
-                        <i class="fas fa-cube text-lg"></i>
-                        <span>Product</span>
-                    </a>
-
-                    {{-- <!-- Category Link -->
-                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-white/90 hover:bg-white/10 rounded-lg transition-colors font-medium">
-                        <i class="fas fa-layer-group text-lg"></i>
-                        <span>Kategori</span>
-                    </a> --}}
-
-                    <!-- Manajemen Akun Link (Admin Only) -->
-                    @if(auth()->user()->role === 'admin')
-                        <a href="{{ route('admin.accounts.index') }}" class="flex items-center gap-3 px-4 py-3 text-white/90 hover:bg-white/10 rounded-lg transition-colors font-medium">
-                            <i class="fas fa-users text-lg"></i>
-                            <span>Manajemen akun</span>
+                    @if(auth()->user()->role === 'user')
+                        <!-- Dashboard Link (User) -->
+                        <a href="{{ route('user.dashboard') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('user.dashboard') ? 'bg-white/20 font-bold' : 'text-white/90 hover:bg-white/10' }} rounded-lg transition-colors font-medium">
+                            <i class="fas fa-th text-lg"></i>
+                            <span>Dashboard</span>
                         </a>
+
+                        <!-- Katalog Buku -->
+                        <a href="{{ route('user.catalog') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('user.catalog') ? 'bg-white/20 font-bold' : 'text-white/90 hover:bg-white/10' }} rounded-lg transition-colors font-medium">
+                            <i class="fas fa-book text-lg"></i>
+                            <span>Katalog Buku</span>
+                        </a>
+
+                        <!-- Keranjang Pinjam -->
+                        <a href="{{ route('user.cart') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('user.cart') ? 'bg-white/20 font-bold' : 'text-white/90 hover:bg-white/10' }} rounded-lg transition-colors font-medium">
+                            <i class="fas fa-shopping-cart text-lg"></i>
+                            <span>Keranjang Pinjam</span>
+                        </a>
+
+                        <!-- Riwayat Peminjaman -->
+                        <a href="{{ route('user.history') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('user.history') ? 'bg-white/20 font-bold' : 'text-white/90 hover:bg-white/10' }} rounded-lg transition-colors font-medium">
+                            <i class="fas fa-history text-lg"></i>
+                            <span>Riwayat Peminjaman</span>
+                        </a>
+                    @else
+                        @php
+                            $rolePrefix = auth()->user()->role === 'admin' ? 'admin' : 'staff';
+                        @endphp
+
+                        <!-- Dashboard Link -->
+                        <a href="{{ route($rolePrefix . '.dashboard') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs($rolePrefix . '.dashboard') ? 'bg-white/20 font-bold' : 'text-white/90 hover:bg-white/10' }} rounded-lg transition-colors font-medium">
+                            <i class="fas fa-th text-lg"></i>
+                            <span>Dashboard</span>
+                        </a>
+
+                        <!-- Product Link -->
+                        <a href="{{ route($rolePrefix . '.products.index') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs($rolePrefix . '.products.*') ? 'bg-white/20 font-bold' : 'text-white/90 hover:bg-white/10' }} rounded-lg transition-colors font-medium">
+                            <i class="fas fa-cube text-lg"></i>
+                            <span>Product</span>
+                        </a>
+
+                        <!-- Manajemen Akun Link (Admin Only) -->
+                        @if(auth()->user()->role === 'admin')
+                            <a href="{{ route('admin.accounts.index') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('admin.accounts.*') ? 'bg-white/20 font-bold' : 'text-white/90 hover:bg-white/10' }} rounded-lg transition-colors font-medium">
+                                <i class="fas fa-users text-lg"></i>
+                                <span>Manajemen akun</span>
+                            </a>
+                        @endif
                     @endif
                 </nav>
 
@@ -89,10 +109,24 @@
                         <button id="menuToggle" class="text-white hover:bg-white/10 p-2 rounded-lg transition-colors">
                             <i class="fas fa-bars text-xl"></i>
                         </button>
-                        <span class="text-white font-bold text-xl tracking-tight ml-1">{{ $title ?? 'Dashboard' }}</span>
+                        @php
+                            $role = auth()->user()->role;
+                            $roleLabel = $role === 'admin' ? 'Admin' : ($role === 'staff' ? 'Staff' : 'Anggota');
+                            
+                            $displayTitle = $title ?? 'Dashboard';
+                            $cleanTitle = preg_replace('/^Fourbooks\s*(-\s*)?/i', '', $displayTitle);
+                            
+                            if (empty($cleanTitle) || strtolower($cleanTitle) === 'dashboard' || strtolower($cleanTitle) === strtolower($roleLabel)) {
+                                $headerTitle = "Fourbooks - " . $roleLabel;
+                            } else {
+                                $headerTitle = "Fourbooks - " . $roleLabel . " - " . $cleanTitle;
+                            }
+                        @endphp
+                        <span class="text-white font-bold text-xl tracking-tight ml-1">{{ $headerTitle }}</span>
                     </div>
 
                     <!-- Search Bar -->
+                    @if(auth()->user()->role !== 'user')
                     <div class="hidden md:flex flex-1 max-w-md mx-4 lg:mx-8">
                         <div class="relative w-full">
                             <input 
@@ -103,13 +137,16 @@
                             <i class="fas fa-search absolute right-3 top-2.5 text-blue-100"></i>
                         </div>
                     </div>
+                    @endif
 
                     <!-- Right Side Actions -->
                     <div class="flex items-center gap-4">
                         <!-- Mobile Search Icon -->
+                        @if(auth()->user()->role !== 'user')
                         <button class="md:hidden text-white hover:bg-white/10 p-2 rounded-lg transition-colors">
                             <i class="fas fa-search text-lg"></i>
                         </button>
+                        @endif
 
                         <!-- User Profile Dropdown -->
                         <div x-data="{ open: false }" class="relative">
@@ -142,18 +179,6 @@
 
                                 <!-- Menu Items -->
                                 <div class="py-2">
-                                    <!-- Ganti Akun -->
-                                    <form method="POST" action="{{ route('logout') }}" class="block">
-                                        @csrf
-                                        <button 
-                                            type="submit"
-                                            class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-neutral-300 hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors"
-                                        >
-                                            <i class="fas fa-user-edit mr-2 text-blue-500"></i>
-                                            Ganti Akun
-                                        </button>
-                                    </form>
-
                                     <!-- Logout -->
                                     <form method="POST" action="{{ route('logout') }}" class="block">
                                         @csrf

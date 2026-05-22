@@ -62,6 +62,7 @@ class ProductSeeder extends Seeder
             ];
 
             foreach ($products as $product) {
+                $product['status'] = $product['stock'] > 0 ? 'Tersedia' : 'Tidak Tersedia';
                 Product::create($product);
             }
         }

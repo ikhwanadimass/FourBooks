@@ -13,7 +13,8 @@ Route::get('/', function () {
     return match (auth()->user()->role) {
         'admin' => redirect()->route('admin.dashboard'),
         'staff' => redirect()->route('staff.dashboard'),
-        default => redirect()->route('admin.dashboard'),
+        'user' => redirect()->route('user.dashboard'),
+        default => redirect()->route('user.dashboard'),
     };
 })->name('home');
 
@@ -30,13 +31,35 @@ Route::middleware(['auth', 'verified', 'role:staff'])->prefix('staff')->name('st
     Route::resource('products', ProductController::class);
 });
 
+// User routes
+Route::middleware(['auth', 'verified', 'role:user'])->prefix('user')->name('user.')->group(function () {
+    Route::get('dashboard', function () {
+        $products = \App\Models\Product::where('status', 'Tersedia')->get();
+        return view('user.dashboard', compact('products'));
+    })->name('dashboard');
+
+    Route::get('catalog', function () {
+        $products = \App\Models\Product::all();
+        return view('user.catalog', compact('products'));
+    })->name('catalog');
+
+    Route::get('cart', function () {
+        return view('user.cart');
+    })->name('cart');
+
+    Route::get('history', function () {
+        return view('user.history');
+    })->name('history');
+});
+
 // Keep old /dashboard route for backward compatibility & Fortify redirect
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return match (auth()->user()->role) {
             'admin' => redirect()->route('admin.dashboard'),
             'staff' => redirect()->route('staff.dashboard'),
-            default => redirect()->route('admin.dashboard'),
+            'user' => redirect()->route('user.dashboard'),
+            default => redirect()->route('user.dashboard'),
         };
     })->name('dashboard');
 });

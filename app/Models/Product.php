@@ -16,6 +16,13 @@ class Product extends Model
         'user_id',
     ];
 
+    protected static function booted()
+    {
+        static::saving(function ($product) {
+            $product->status = $product->stock > 0 ? 'Tersedia' : 'Tidak Tersedia';
+        });
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
