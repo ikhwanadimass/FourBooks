@@ -11,7 +11,9 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
     Route::resource('products', ProductController::class);
+    });
+    
+Route::middleware(['auth', 'verified', 'role:super_admin'])->group(function () {
     Route::resource('accounts', AccountController::class)->only(['index', 'store', 'destroy']);
 });
-
 require __DIR__.'/settings.php';

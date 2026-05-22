@@ -14,7 +14,7 @@ class AccountController extends Controller
     public function index()
     {
         // Only admin can access
-        if (auth()->user()->role !== 'admin') {
+        if (auth()->user()->role !== 'super_admin') {
             abort(403);
         }
 
