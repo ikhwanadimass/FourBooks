@@ -15,9 +15,18 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Create admin user if not exists
+        if (User::where('email', 'test@example.com')->doesntExist()) {
+            User::factory()->create([
+                'name' => 'Test User',
+                'email' => 'test@example.com',
+                'role' => 'admin',
+            ]);
+        } else {
+            // Update existing user to admin
+            User::where('email', 'test@example.com')->update(['role' => 'admin']);
+        }
+
+        $this->call(ProductSeeder::class);
     }
 }
