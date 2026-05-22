@@ -12,8 +12,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+
         $this->call([
             SuperAdmin::class,
+            ProductSeeder::class
         ]);
     }
 }

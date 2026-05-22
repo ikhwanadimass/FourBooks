@@ -40,22 +40,24 @@
                     </a>
 
                     <!-- Product Link -->
-                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-white/90 hover:bg-white/10 rounded-lg transition-colors font-medium">
+                    <a href="{{ route('products.index') }}" class="flex items-center gap-3 px-4 py-3 text-white/90 hover:bg-white/10 rounded-lg transition-colors font-medium">
                         <i class="fas fa-cube text-lg"></i>
                         <span>Product</span>
                     </a>
 
-                    <!-- Category Link -->
+                    {{-- <!-- Category Link -->
                     <a href="#" class="flex items-center gap-3 px-4 py-3 text-white/90 hover:bg-white/10 rounded-lg transition-colors font-medium">
                         <i class="fas fa-layer-group text-lg"></i>
                         <span>Kategori</span>
-                    </a>
+                    </a> --}}
 
-                    <!-- Settings Link -->
-                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-white/90 hover:bg-white/10 rounded-lg transition-colors font-medium">
-                        <i class="fas fa-cog text-lg"></i>
-                        <span>Pengaturan</span>
-                    </a>
+                    <!-- Manajemen Akun Link (Admin Only) -->
+                    @if(auth()->user()->role === 'admin')
+                        <a href="{{ route('accounts.index') }}" class="flex items-center gap-3 px-4 py-3 text-white/90 hover:bg-white/10 rounded-lg transition-colors font-medium">
+                            <i class="fas fa-users text-lg"></i>
+                            <span>Manajemen akun</span>
+                        </a>
+                    @endif
                 </nav>
 
                 <!-- User Section at Bottom -->
@@ -105,10 +107,63 @@
                             <i class="fas fa-search text-lg"></i>
                         </button>
 
-                        <!-- User Profile Icon -->
-                        <button class="text-white hover:bg-white/10 p-2 rounded-lg transition-colors">
-                            <i class="fas fa-user-circle text-2xl"></i>
-                        </button>
+                        <!-- User Profile Dropdown -->
+                        <div x-data="{ open: false }" class="relative">
+                            <!-- Profile Button -->
+                            <button 
+                                @click="open = !open"
+                                @click.outside="open = false"
+                                class="text-white hover:bg-white/10 p-2 rounded-lg transition-colors"
+                            >
+                                <i class="fas fa-user-circle text-2xl"></i>
+                            </button>
+
+                            <!-- Dropdown Menu -->
+                            <div 
+                                x-show="open"
+                                x-transition:enter="transition ease-out duration-100"
+                                x-transition:enter-start="transform opacity-0 scale-95"
+                                x-transition:enter-end="transform opacity-100 scale-100"
+                                x-transition:leave="transition ease-in duration-75"
+                                x-transition:leave-start="transform opacity-100 scale-100"
+                                x-transition:leave-end="transform opacity-0 scale-95"
+                                class="absolute right-0 mt-2 w-48 bg-white dark:bg-neutral-800 rounded-lg shadow-lg overflow-hidden z-50"
+                                style="display: none;"
+                            >
+                                <!-- User Info -->
+                                <div class="px-4 py-3 border-b border-gray-200 dark:border-neutral-700">
+                                    <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ auth()->user()->name ?? 'User' }}</p>
+                                    <p class="text-xs text-gray-600 dark:text-neutral-400 truncate">{{ auth()->user()->email ?? 'user@example.com' }}</p>
+                                </div>
+
+                                <!-- Menu Items -->
+                                <div class="py-2">
+                                    <!-- Ganti Akun -->
+                                    <form method="POST" action="{{ route('logout') }}" class="block">
+                                        @csrf
+                                        <button 
+                                            type="submit"
+                                            class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-neutral-300 hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors"
+                                        >
+                                            <i class="fas fa-user-edit mr-2 text-blue-500"></i>
+                                            Ganti Akun
+                                        </button>
+                                    </form>
+
+                                    <!-- Logout -->
+                                    <form method="POST" action="{{ route('logout') }}" class="block">
+                                        @csrf
+                                        <button 
+                                            type="submit"
+                                            class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-neutral-300 hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors"
+                                        >
+                                            <i class="fas fa-sign-out-alt mr-2 text-red-500"></i>
+                                            Logout
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </header>

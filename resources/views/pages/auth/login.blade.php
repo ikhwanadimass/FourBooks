@@ -54,6 +54,16 @@
             >
                 Log In
             </button>
+
+            <!-- Register Link -->
+            <div class="text-center mt-8">
+                <p class="text-gray-300 text-base">
+                    Belum punya akun?
+                    <a href="{{ route('register') }}" class="text-blue-500 font-semibold hover:text-blue-400 transition-colors">
+                        Daftar di sini
+                    </a>
+                </p>
+            </div>
         </form>
     </div>
 </x-layouts::auth.login>
