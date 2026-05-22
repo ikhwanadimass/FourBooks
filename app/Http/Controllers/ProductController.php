@@ -39,14 +39,15 @@ class ProductController extends Controller
             'category' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
-            'status' => 'required|in:Aktif,Nonaktif',
         ]);
 
+        $validated['status'] = $validated['stock'] > 0 ? 'Tersedia' : 'Tidak Tersedia';
         $validated['user_id'] = auth()->id();
 
         Product::create($validated);
 
-        return redirect()->route('products.index')->with('success', 'Produk berhasil ditambahkan');
+        $prefix = auth()->user()->role === 'admin' ? 'admin' : 'staff';
+        return redirect()->route($prefix . '.products.index')->with('success', 'Produk berhasil ditambahkan');
     }
 
     /**
@@ -90,12 +91,14 @@ class ProductController extends Controller
             'category' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
-            'status' => 'required|in:Aktif,Nonaktif',
         ]);
+
+        $validated['status'] = $validated['stock'] > 0 ? 'Tersedia' : 'Tidak Tersedia';
 
         $product->update($validated);
 
-        return redirect()->route('products.index')->with('success', 'Produk berhasil diperbarui');
+        $prefix = auth()->user()->role === 'admin' ? 'admin' : 'staff';
+        return redirect()->route($prefix . '.products.index')->with('success', 'Produk berhasil diperbarui');
     }
 
     /**
@@ -111,6 +114,7 @@ class ProductController extends Controller
 
         $product->delete();
 
-        return redirect()->route('products.index')->with('success', 'Produk berhasil dihapus');
+        $prefix = auth()->user()->role === 'admin' ? 'admin' : 'staff';
+        return redirect()->route($prefix . '.products.index')->with('success', 'Produk berhasil dihapus');
     }
 }

@@ -33,14 +33,18 @@
                 <nav class="flex-1 px-4 py-6 space-y-2">
                     <div class="text-xs font-semibold text-white/70 uppercase tracking-wider px-2 mb-4">Menu</div>
                     
+                    @php
+                        $rolePrefix = auth()->user()->role === 'admin' ? 'admin' : 'staff';
+                    @endphp
+
                     <!-- Dashboard Link -->
-                    <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-4 py-3 text-white bg-white/15 rounded-lg hover:bg-white/20 transition-colors font-medium">
+                    <a href="{{ route($rolePrefix . '.dashboard') }}" class="flex items-center gap-3 px-4 py-3 text-white bg-white/15 rounded-lg hover:bg-white/20 transition-colors font-medium">
                         <i class="fas fa-th text-lg"></i>
                         <span>Dashboard</span>
                     </a>
 
                     <!-- Product Link -->
-                    <a href="{{ route('products.index') }}" class="flex items-center gap-3 px-4 py-3 text-white/90 hover:bg-white/10 rounded-lg transition-colors font-medium">
+                    <a href="{{ route($rolePrefix . '.products.index') }}" class="flex items-center gap-3 px-4 py-3 text-white/90 hover:bg-white/10 rounded-lg transition-colors font-medium">
                         <i class="fas fa-cube text-lg"></i>
                         <span>Product</span>
                     </a>
@@ -53,7 +57,7 @@
 
                     <!-- Manajemen Akun Link (Admin Only) -->
                     @if(auth()->user()->role === 'admin')
-                        <a href="{{ route('accounts.index') }}" class="flex items-center gap-3 px-4 py-3 text-white/90 hover:bg-white/10 rounded-lg transition-colors font-medium">
+                        <a href="{{ route('admin.accounts.index') }}" class="flex items-center gap-3 px-4 py-3 text-white/90 hover:bg-white/10 rounded-lg transition-colors font-medium">
                             <i class="fas fa-users text-lg"></i>
                             <span>Manajemen akun</span>
                         </a>

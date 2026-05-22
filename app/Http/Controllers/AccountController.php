@@ -53,7 +53,7 @@ class AccountController extends Controller
             'email_verified_at' => now(),
         ]);
 
-        return redirect()->route('accounts.index')->with('success', 'Akun berhasil ditambahkan');
+        return redirect()->route('admin.accounts.index')->with('success', 'Akun berhasil ditambahkan');
     }
 
     /**
@@ -69,6 +69,6 @@ class AccountController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
 
-        return redirect()->route('accounts.index')->with('success', 'Akun berhasil dihapus');
+        return redirect()->route('admin.accounts.index')->with('success', 'Akun berhasil dihapus');
     }
 }

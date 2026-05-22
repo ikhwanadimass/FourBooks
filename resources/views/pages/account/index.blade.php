@@ -60,7 +60,7 @@
                                 <!-- Delete Action -->
                                 <td class="px-6 py-4">
                                     <div class="flex items-center justify-center">
-                                        <form method="POST" action="{{ route('accounts.destroy', $account->id) }}" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus akun ini?');">
+                                        <form method="POST" action="{{ route('admin.accounts.destroy', $account->id) }}" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus akun ini?');">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg">
@@ -115,7 +115,7 @@
                 <h2 class="text-2xl font-bold text-neutral-900 dark:text-white mb-6">Tambah Staff</h2>
 
                 <!-- Modal Form -->
-                <form method="POST" action="{{ route('accounts.store') }}" class="space-y-4">
+                <form method="POST" action="{{ route('admin.accounts.store') }}" class="space-y-4">
                     @csrf
 
                     <!-- Section Title -->

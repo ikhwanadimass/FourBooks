@@ -27,6 +27,18 @@ class DatabaseSeeder extends Seeder
             User::where('email', 'test@example.com')->update(['role' => 'admin']);
         }
 
+        // Create staff user if not exists
+        if (User::where('email', 'staff@example.com')->doesntExist()) {
+            User::factory()->create([
+                'name' => 'Staff User',
+                'email' => 'staff@example.com',
+                'role' => 'staff',
+            ]);
+        } else {
+            // Update existing user to staff
+            User::where('email', 'staff@example.com')->update(['role' => 'staff']);
+        }
+
         $this->call(ProductSeeder::class);
     }
 }

@@ -24,7 +24,7 @@ class ProductSeeder extends Seeder
                     'category' => 'Buku Novel',
                     'price' => 50000,
                     'stock' => 0,
-                    'status' => 'Aktif',
+                    'status' => 'Tersedia',
                     'user_id' => $user->id,
                 ],
                 [
@@ -32,7 +32,7 @@ class ProductSeeder extends Seeder
                     'category' => 'Buku Novel',
                     'price' => 50000,
                     'stock' => 0,
-                    'status' => 'Aktif',
+                    'status' => 'Tersedia',
                     'user_id' => $user->id,
                 ],
                 [
@@ -40,7 +40,7 @@ class ProductSeeder extends Seeder
                     'category' => 'Buku Novel',
                     'price' => 50000,
                     'stock' => 0,
-                    'status' => 'Aktif',
+                    'status' => 'Tersedia',
                     'user_id' => $user->id,
                 ],
                 [
@@ -48,7 +48,7 @@ class ProductSeeder extends Seeder
                     'category' => 'Buku Novel',
                     'price' => 50000,
                     'stock' => 0,
-                    'status' => 'Aktif',
+                    'status' => 'Tersedia',
                     'user_id' => $user->id,
                 ],
                 [
@@ -56,7 +56,7 @@ class ProductSeeder extends Seeder
                     'category' => 'Buku Novel',
                     'price' => 50000,
                     'stock' => 0,
-                    'status' => 'Aktif',
+                    'status' => 'Tersedia',
                     'user_id' => $user->id,
                 ],
             ];

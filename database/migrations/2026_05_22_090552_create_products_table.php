@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('category');
             $table->decimal('price', 12, 2);
             $table->integer('stock');
-            $table->enum('status', ['Aktif', 'Nonaktif'])->default('Aktif');
+            $table->enum('status', ['Tersedia', 'Tidak Tersedia'])->default('Tersedia');
             $table->string('icon')->nullable();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();

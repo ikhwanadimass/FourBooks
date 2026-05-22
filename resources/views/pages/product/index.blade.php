@@ -5,7 +5,7 @@
             <h1 class="text-3xl font-bold text-neutral-900 dark:text-white">Produk</h1>
             <p class="text-neutral-600 dark:text-neutral-400 mt-2">{{ $products->count() }} Produk Terdaftar</p>
         </div>
-        <a href="{{ route('products.create') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition-colors shadow-md">
+        <a href="{{ route((auth()->user()->role === 'admin' ? 'admin' : 'staff') . '.products.create') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition-colors shadow-md">
             <i class="fas fa-plus text-lg"></i>
             Tambah Produk
         </a>
@@ -62,22 +62,22 @@
 
                             <!-- Status -->
                             <td class="px-6 py-4">
-                                <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold @if($product->status === 'Aktif') bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 @else bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 @endif">
-                                    <i class="fas fa-circle text-xs"></i>
-                                    {{ $product->status }}
-                                </span>
+                                 <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold @if($product->status === 'Tersedia') bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 @else bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 @endif">
+                                     <i class="fas fa-circle text-xs"></i>
+                                     {{ $product->status }}
+                                 </span>
                             </td>
 
                             <!-- Actions -->
                             <td class="px-6 py-4">
                                 <div class="flex items-center justify-center gap-2">
                                     <!-- Edit Button -->
-                                    <a href="{{ route('products.edit', $product->id) }}" class="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors p-2 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg">
+                                    <a href="{{ route((auth()->user()->role === 'admin' ? 'admin' : 'staff') . '.products.edit', $product->id) }}" class="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors p-2 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg">
                                         <i class="fas fa-pen text-lg"></i>
                                     </a>
 
                                     <!-- Delete Button -->
-                                    <form method="POST" action="{{ route('products.destroy', $product->id) }}" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus produk ini?');">
+                                    <form method="POST" action="{{ route((auth()->user()->role === 'admin' ? 'admin' : 'staff') . '.products.destroy', $product->id) }}" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus produk ini?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg">
