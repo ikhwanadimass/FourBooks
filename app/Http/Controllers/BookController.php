@@ -10,15 +10,25 @@ class BookController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $books = Book::where('user_id', auth()->id())->get();
+        $books = Book::where('user_id', auth()->id())
+            ->when($request->search, function ($query, $search) {
+                // Kita bungkus dalam fungsi agar 'orWhere' tidak mengabaikan 'user_id'
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', '%' . $search . '%')
+                        ->orWhere('author', 'like', '%' . $search . '%')
+                        ->orWhere('category', 'like', '%' . $search . '%');
+                });
+            })
+            ->get();
+
         return view('pages.book.index', [
             'books' => $books,
             'title' => 'Buku',
         ]);
     }
-    
+
     /**
      * Show the form for creating a new resource.
      */

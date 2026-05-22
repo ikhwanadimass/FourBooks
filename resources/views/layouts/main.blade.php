@@ -154,13 +154,17 @@
 
                     <!-- Search Bar -->
                     @if (auth()->user()->role !== 'user')
-                        <div class="hidden md:flex flex-1 max-w-md mx-4 lg:mx-8">
+                       <form action="{{ route(auth()->user()->role . '.books.index') }}" method="GET"
+                            class="hidden md:flex flex-1 max-w-md mx-4 lg:mx-8">
                             <div class="relative w-full">
-                                <input type="text" placeholder="Cari Barang, Merek, Dan Lain-Lainnya"
+                                <input type="text" name="search" value="{{ request('search') }}"
+                                    placeholder="Cari Barang, Merek, Dan Lain-Lainnya..."
                                     class="w-full px-4 py-2 pr-10 bg-white/15 border-0 rounded-lg text-white placeholder-blue-100 focus:outline-none focus:ring-2 focus:ring-white/50">
-                                <i class="fas fa-search absolute right-3 top-2.5 text-blue-100"></i>
+                                <button type="submit" class="absolute right-3 top-2.5 text-blue-100">
+                                    <i class="fas fa-search"></i>
+                                </button>
                             </div>
-                        </div>
+                        </form>
                     @endif
 
                     <!-- Right Side Actions -->
