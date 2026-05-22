@@ -1,4 +1,4 @@
-<x-layouts::main :title="__('Fourbooks')">
+<x-layouts::main :title="__('Fourbooks - Staff')">
     <!-- Page Title -->
     <div class="mb-8">
         <h1 class="text-3xl font-bold text-neutral-900 dark:text-white">Dashboard</h1>
