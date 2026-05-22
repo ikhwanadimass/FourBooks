@@ -2,30 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
+use App\Models\Book;
 use Illuminate\Http\Request;
 
-class ProductController extends Controller
+class BookController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $products = Product::where('user_id', auth()->id())->get();
-        return view('pages.product.index', [
-            'products' => $products,
-            'title' => 'Produk',
+        $books = Book::where('user_id', auth()->id())->get();
+        return view('pages.book.index', [
+            'books' => $books,
+            'title' => 'Buku',
         ]);
     }
-
+    
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        return view('pages.product.create', [
-            'title' => 'Tambah Produk',
+        return view('pages.book.create', [
+            'title' => 'Tambah Buku',
         ]);
     }
 
@@ -37,17 +37,18 @@ class ProductController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'category' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0',
+            'author' => 'nullable|string|max:255',
+            'isbn' => 'nullable|string|unique:books|max:255',
             'stock' => 'required|integer|min:0',
         ]);
 
         $validated['status'] = $validated['stock'] > 0 ? 'Tersedia' : 'Tidak Tersedia';
         $validated['user_id'] = auth()->id();
 
-        Product::create($validated);
+        Book::create($validated);
 
         $prefix = auth()->user()->role === 'admin' ? 'admin' : 'staff';
-        return redirect()->route($prefix . '.products.index')->with('success', 'Produk berhasil ditambahkan');
+        return redirect()->route($prefix . '.books.index')->with('success', 'Buku berhasil ditambahkan');
     }
 
     /**
@@ -63,15 +64,15 @@ class ProductController extends Controller
      */
     public function edit(string $id)
     {
-        $product = Product::findOrFail($id);
-        
-        if ($product->user_id !== auth()->id()) {
+        $book = Book::findOrFail($id);
+
+        if ($book->user_id !== auth()->id()) {
             abort(403);
         }
 
-        return view('pages.product.edit', [
-            'product' => $product,
-            'title' => 'Edit Produk',
+        return view('pages.book.edit', [
+            'book' => $book,
+            'title' => 'Edit Buku',
         ]);
     }
 
@@ -80,25 +81,26 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $product = Product::findOrFail($id);
-        
-        if ($product->user_id !== auth()->id()) {
+        $book = Book::findOrFail($id);
+
+        if ($book->user_id !== auth()->id()) {
             abort(403);
         }
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'category' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0',
+            'author' => 'nullable|string|max:255',
+            'isbn' => 'nullable|string|unique:books,isbn,' . $id . '|max:255',
             'stock' => 'required|integer|min:0',
         ]);
 
         $validated['status'] = $validated['stock'] > 0 ? 'Tersedia' : 'Tidak Tersedia';
 
-        $product->update($validated);
+        $book->update($validated);
 
         $prefix = auth()->user()->role === 'admin' ? 'admin' : 'staff';
-        return redirect()->route($prefix . '.products.index')->with('success', 'Produk berhasil diperbarui');
+        return redirect()->route($prefix . '.books.index')->with('success', 'Buku berhasil diperbarui');
     }
 
     /**
@@ -106,15 +108,15 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
-        $product = Product::findOrFail($id);
-        
-        if ($product->user_id !== auth()->id()) {
+        $book = Book::findOrFail($id);
+
+        if ($book->user_id !== auth()->id()) {
             abort(403);
         }
 
-        $product->delete();
+        $book->delete();
 
         $prefix = auth()->user()->role === 'admin' ? 'admin' : 'staff';
-        return redirect()->route($prefix . '.products.index')->with('success', 'Produk berhasil dihapus');
+        return redirect()->route($prefix . '.books.index')->with('success', 'Buku berhasil dihapus');
     }
 }

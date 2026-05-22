@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Notifications\SendTempPassword;
 
 class AccountController extends Controller
 {
@@ -43,15 +44,17 @@ class AccountController extends Controller
         ]);
 
         // Generate random password
-        $password = substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'), 0, 12);
+        $password = substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 8);
 
-        User::create([
+        $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'role' => $validated['role'],
             'password' => Hash::make($password),
             'email_verified_at' => now(),
         ]);
+
+        $user->notify(new SendTempPassword($password));
 
         return redirect()->route('admin.accounts.index')->with('success', 'Akun berhasil ditambahkan');
     }

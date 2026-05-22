@@ -1,69 +1,6 @@
 <x-layouts::main :title="__('Fourbooks - Keranjang Pinjam')">
-    <div x-data="{
-        cart: JSON.parse(localStorage.getItem('fourbooks_cart') || '[]'),
-        borrowedCount: parseInt(localStorage.getItem('fourbooks_borrowed_count') || '3'),
-        isSubmitting: false,
-        notification: { show: false, message: '', type: 'success' },
+    <div x-data="cartSetup" class="relative">
 
-        showNotification(msg, type = 'success') {
-            this.notification.message = msg;
-            this.notification.type = type;
-            this.notification.show = true;
-            setTimeout(() => { this.notification.show = false; }, 3000);
-        },
-
-        removeBook(bookId) {
-            this.cart = this.cart.filter(item => item.id !== bookId);
-            localStorage.setItem('fourbooks_cart', JSON.stringify(this.cart));
-            
-            // Dispatch event to sync state
-            window.dispatchEvent(new CustomEvent('cart-updated'));
-
-            this.showNotification('Buku berhasil dihapus dari daftar pengajuan.', 'success');
-        },
-
-        kirimPengajuan() {
-            if (this.cart.length === 0) return;
-
-            this.isSubmitting = true;
-            
-            // Simulate server request
-            setTimeout(() => {
-                // Get existing history
-                const existingHistory = JSON.parse(localStorage.getItem('fourbooks_history') || '[]');
-                
-                // Add each item in cart to history
-                this.cart.forEach(book => {
-                    existingHistory.unshift({
-                        id: Date.now() + Math.floor(Math.random() * 1000),
-                        name: book.name,
-                        category: book.category,
-                        author: book.author,
-                        coverColor: book.coverColor,
-                        borrowDate: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
-                        dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
-                        status: 'Diajukan',
-                        fine: 0
-                    });
-                });
-                
-                // Save history
-                localStorage.setItem('fourbooks_history', JSON.stringify(existingHistory));
-                
-                // Clear cart
-                this.cart = [];
-                localStorage.setItem('fourbooks_cart', '[]');
-                
-                // Dispatch event to sync state
-                window.dispatchEvent(new CustomEvent('cart-updated'));
-
-                this.isSubmitting = false;
-                this.showNotification('Pengajuan peminjaman berhasil dikirim! Silakan tunggu konfirmasi staff.', 'success');
-            }, 1500);
-        }
-    }" class="relative">
-
-        <!-- Toast Notification -->
         <div 
             x-show="notification.show" 
             x-transition:enter="transition ease-out duration-300 transform"
@@ -72,8 +9,13 @@
             x-transition:leave="transition ease-in duration-200"
             x-transition:leave-start="opacity-100"
             x-transition:leave-end="opacity-0"
-            class="fixed top-4 right-4 z-50 flex items-center gap-3 w-full max-w-sm p-4 bg-white dark:bg-neutral-800 rounded-xl shadow-2xl border-l-4 border-green-500"
+            class="fixed top-4 right-4 z-50 flex items-center gap-3 w-full max-w-sm p-4 bg-white dark:bg-neutral-800 rounded-xl shadow-2xl border-l-4"
             style="display: none;"
+            :class="{
+                'border-green-500': notification.type === 'success',
+                'border-yellow-500': notification.type === 'warning',
+                'border-red-500': notification.type === 'error'
+            }"
         >
             <div class="flex-1">
                 <p class="text-sm font-semibold text-neutral-900 dark:text-white" x-text="notification.message"></p>
@@ -83,14 +25,12 @@
             </button>
         </div>
 
-        <!-- Page Header -->
         <div class="mb-8">
             <h1 class="text-3xl font-extrabold text-neutral-900 dark:text-white">Daftar Pengajuan Pinjam</h1>
             <p class="text-neutral-600 dark:text-neutral-400 mt-2">Periksa daftar buku yang ingin Anda ajukan untuk dipinjam.</p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Left Area: Cart List -->
             <div class="lg:col-span-2 space-y-4">
                 <div class="bg-white dark:bg-neutral-800 rounded-2xl shadow-md overflow-hidden">
                     <div class="px-6 py-5 border-b border-neutral-100 dark:border-neutral-700 flex justify-between items-center bg-neutral-50 dark:bg-neutral-800">
@@ -98,12 +38,10 @@
                         <span class="text-xs px-2.5 py-1 rounded-full font-bold bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400" x-text="cart.length + ' Buku'"></span>
                     </div>
 
-                    <!-- Cart Item list -->
                     <div class="divide-y divide-neutral-100 dark:divide-neutral-700">
                         <template x-for="item in cart" :key="item.id">
                             <div class="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-neutral-50 dark:hover:bg-neutral-700/30 transition-colors">
                                 <div class="flex items-center gap-4">
-                                    <!-- Category Icon Box -->
                                     <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 mt-1"
                                          :class="{
                                              'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400': item.id % 4 === 0,
@@ -128,7 +66,6 @@
                             </div>
                         </template>
 
-                        <!-- Empty State -->
                         <div x-show="cart.length === 0" class="p-12 text-center">
                             <i class="fas fa-shopping-basket text-5xl text-neutral-300 dark:text-neutral-600 mb-4"></i>
                             <p class="text-neutral-600 dark:text-neutral-400 text-lg font-semibold">Keranjang pinjam kosong</p>
@@ -144,7 +81,6 @@
                 </div>
             </div>
 
-            <!-- Right Area: Summary Box -->
             <div class="lg:col-span-1">
                 <div class="bg-white dark:bg-neutral-800 rounded-2xl shadow-md p-6 sticky top-24 border border-neutral-100 dark:border-neutral-700">
                     <h3 class="text-lg font-bold text-neutral-900 dark:text-white mb-4">Ringkasan Pengajuan</h3>
@@ -178,4 +114,82 @@
         </div>
 
     </div>
+
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('cartSetup', () => ({
+                cart: JSON.parse(localStorage.getItem('fourbooks_cart') || '[]'),
+                isSubmitting: false,
+                notification: { show: false, message: '', type: 'success' },
+
+                showNotification(msg, type = 'success') {
+                    this.notification.message = msg;
+                    this.notification.type = type;
+                    this.notification.show = true;
+                    setTimeout(() => { this.notification.show = false; }, 3000);
+                },
+
+                removeBook(bookId) {
+                    this.cart = this.cart.filter(item => item.id !== bookId);
+                    localStorage.setItem('fourbooks_cart', JSON.stringify(this.cart));
+                    window.dispatchEvent(new CustomEvent('cart-updated'));
+                    this.showNotification('Buku berhasil dihapus dari daftar pengajuan.', 'success');
+                },
+
+                async kirimPengajuan() {
+                    if (this.cart.length === 0) return;
+                    this.isSubmitting = true;
+
+                    let successCount = 0;
+                    let errorMessages = [];
+
+                    // Loop melalui setiap buku di keranjang untuk dikirim ke database
+                    for (const book of this.cart) {
+                        try {
+                            let response = await fetch("{{ route('user.loans.store') }}", {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                    'Accept': 'application/json'
+                                },
+                                body: JSON.stringify({ book_id: book.id })
+                            });
+
+                            let result = await response.json();
+
+                            if (response.ok) {
+                                successCount++;
+                            } else {
+                                // Tampung pesan error (contoh: stok habis, sudah dipinjam)
+                                errorMessages.push(`'${book.name}': ${result.message}`);
+                            }
+                        } catch (error) {
+                            errorMessages.push(`'${book.name}': Gagal terhubung ke server.`);
+                        }
+                    }
+
+                    this.isSubmitting = false;
+
+                    // Jika ada setidaknya 1 buku yang berhasil masuk database
+                    if (successCount > 0) {
+                        // Kosongkan keranjang
+                        this.cart = [];
+                        localStorage.setItem('fourbooks_cart', '[]');
+                        window.dispatchEvent(new CustomEvent('cart-updated'));
+
+                        // Cek apakah ada buku yang gagal di-insert
+                        if (errorMessages.length > 0) {
+                            this.showNotification(`Sebagian terkirim. Gagal: ${errorMessages[0]}`, 'warning');
+                        } else {
+                            this.showNotification('Semua pengajuan peminjaman berhasil dikirim ke Admin!', 'success');
+                        }
+                    } else {
+                        // Jika tidak ada satu pun buku yang berhasil di-insert
+                        this.showNotification(`Gagal mengirim pengajuan: ${errorMessages[0]}`, 'error');
+                    }
+                }
+            }));
+        });
+    </script>
 </x-layouts::main>
